@@ -87,3 +87,23 @@ func (g *GraphHelper) GetUser() (models.Userable, error) {
 			QueryParameters: &query,
 		})
 }
+
+func (g *GraphHelper) GetInbox() (models.MessageCollectionResponseable, error) {
+	var topValue int32 = 25
+	query := users.ItemMailFoldersItemMessagesRequestBuilderGetQueryParameters{
+		// Only request specific properties
+		Select: []string{"from", "isRead", "receivedDateTime", "subject"},
+		// Get at most 25 results
+		Top: &topValue,
+		// Sort by received time, newest first
+		Orderby: []string{"receivedDateTime DESC"},
+	}
+
+	return g.userClient.Me().MailFolders().
+		ByMailFolderId("inbox").
+		Messages().
+		Get(context.Background(),
+			&users.ItemMailFoldersItemMessagesRequestBuilderGetRequestConfiguration{
+				QueryParameters: &query,
+			})
+}

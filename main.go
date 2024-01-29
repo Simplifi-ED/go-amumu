@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-send/graphhelper"
 	"log"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -104,7 +105,41 @@ func displayAccessToken(graphHelper *graphhelper.GraphHelper) {
 }
 
 func listInbox(graphHelper *graphhelper.GraphHelper) {
-	// TODO
+	messages, err := graphHelper.GetInbox()
+	if err != nil {
+		log.Panicf("Error getting user's inbox: %v", err)
+	}
+
+	// Load local time zone
+	// Dates returned by Graph are in UTC, use this
+	// to convert to local
+	location, err := time.LoadLocation("Local")
+	if err != nil {
+		log.Panicf("Error getting local timezone: %v", err)
+	}
+
+	// Output each message's details
+	for _, message := range messages.GetValue() {
+		fmt.Printf("Message: %s\n", *message.GetSubject())
+		fmt.Printf("  From: %s\n", *message.GetFrom().GetEmailAddress().GetName())
+
+		status := "Unknown"
+		if *message.GetIsRead() {
+			status = "Read"
+		} else {
+			status = "Unread"
+		}
+		fmt.Printf("  Status: %s\n", status)
+		fmt.Printf("  Received: %s\n", (*message.GetReceivedDateTime()).In(location))
+	}
+
+	// If GetOdataNextLink does not return nil,
+	// there are more messages available on the server
+	nextLink := messages.GetOdataNextLink()
+
+	fmt.Println()
+	fmt.Printf("More messages available? %t\n", nextLink != nil)
+	fmt.Println()
 }
 
 func sendMail(graphHelper *graphhelper.GraphHelper) {
