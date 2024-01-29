@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	auth "github.com/microsoft/kiota-authentication-azure-go"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
@@ -60,4 +61,15 @@ func (g *GraphHelper) InitializeGraphForUserAuth() error {
 	g.userClient = client
 
 	return nil
+}
+
+func (g *GraphHelper) GetUserToken() (*string, error) {
+	token, err := g.deviceCodeCredential.GetToken(context.Background(), policy.TokenRequestOptions{
+		Scopes: g.graphUserScopes,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &token.Token, nil
 }

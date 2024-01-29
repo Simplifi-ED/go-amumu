@@ -79,7 +79,13 @@ func greetUser(graphHelper *graphhelper.GraphHelper) {
 }
 
 func displayAccessToken(graphHelper *graphhelper.GraphHelper) {
-	// TODO
+	token, err := graphHelper.GetUserToken()
+	if err != nil {
+		log.Panicf("Error getting user token: %v\n", err)
+	}
+
+	fmt.Printf("User token: %s", *token)
+	fmt.Println()
 }
 
 func listInbox(graphHelper *graphhelper.GraphHelper) {
