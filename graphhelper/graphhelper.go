@@ -107,3 +107,29 @@ func (g *GraphHelper) GetInbox() (models.MessageCollectionResponseable, error) {
 				QueryParameters: &query,
 			})
 }
+
+func (g *GraphHelper) SendMail(subject *string, body *string, recipient *string) error {
+	// Create a new message
+	message := models.NewMessage()
+	message.SetSubject(subject)
+
+	messageBody := models.NewItemBody()
+	messageBody.SetContent(body)
+	contentType := models.TEXT_BODYTYPE
+	messageBody.SetContentType(&contentType)
+	message.SetBody(messageBody)
+
+	toRecipient := models.NewRecipient()
+	emailAddress := models.NewEmailAddress()
+	emailAddress.SetAddress(recipient)
+	toRecipient.SetEmailAddress(emailAddress)
+	message.SetToRecipients([]models.Recipientable{
+		toRecipient,
+	})
+
+	sendMailBody := users.NewItemSendMailPostRequestBody()
+	sendMailBody.SetMessage(message)
+
+	// Send the message
+	return g.userClient.Me().SendMail().Post(context.Background(), sendMailBody, nil)
+}

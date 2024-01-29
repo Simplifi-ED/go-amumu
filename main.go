@@ -143,7 +143,29 @@ func listInbox(graphHelper *graphhelper.GraphHelper) {
 }
 
 func sendMail(graphHelper *graphhelper.GraphHelper) {
-	// TODO
+	// Send mail to the signed-in user
+	// Get the user for their email address
+	user, err := graphHelper.GetUser()
+	if err != nil {
+		log.Panicf("Error getting user: %v", err)
+	}
+
+	// For Work/school accounts, email is in Mail property
+	// Personal accounts, email is in UserPrincipalName
+	email := user.GetMail()
+	if email == nil {
+		email = user.GetUserPrincipalName()
+	}
+
+	subject := "Testing Microsoft Graph"
+	body := "Hello world from GO APP!"
+	err = graphHelper.SendMail(&subject, &body, email)
+	if err != nil {
+		log.Panicf("Error sending mail: %v", err)
+	}
+
+	fmt.Println("Mail sent.")
+	fmt.Println()
 }
 
 func makeGraphCall(graphHelper *graphhelper.GraphHelper) {
