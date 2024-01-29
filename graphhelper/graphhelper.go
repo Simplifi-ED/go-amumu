@@ -10,6 +10,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	auth "github.com/microsoft/kiota-authentication-azure-go"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
+	"github.com/microsoftgraph/msgraph-sdk-go/users"
 )
 
 type GraphHelper struct {
@@ -72,4 +74,16 @@ func (g *GraphHelper) GetUserToken() (*string, error) {
 	}
 
 	return &token.Token, nil
+}
+
+func (g *GraphHelper) GetUser() (models.Userable, error) {
+	query := users.UserItemRequestBuilderGetQueryParameters{
+		// Only request specific properties
+		Select: []string{"displayName", "mail", "userPrincipalName"},
+	}
+
+	return g.userClient.Me().Get(context.Background(),
+		&users.UserItemRequestBuilderGetRequestConfiguration{
+			QueryParameters: &query,
+		})
 }
