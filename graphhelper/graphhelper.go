@@ -2,9 +2,7 @@ package graphhelper
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -15,9 +13,8 @@ import (
 )
 
 type GraphHelper struct {
-	deviceCodeCredential *azidentity.DeviceCodeCredential
-	userClient           *msgraphsdk.GraphServiceClient
-	graphUserScopes      []string
+	clientSecretCredential *azidentity.ClientSecretCredential
+	appClient              *msgraphsdk.GraphServiceClient
 }
 
 func NewGraphHelper() *GraphHelper {
@@ -25,29 +22,21 @@ func NewGraphHelper() *GraphHelper {
 	return g
 }
 
-func (g *GraphHelper) InitializeGraphForUserAuth() error {
+func (g *GraphHelper) InitializeGraphForAppAuth() error {
 	clientId := os.Getenv("CLIENT_ID")
 	tenantId := os.Getenv("TENANT_ID")
-	scopes := os.Getenv("GRAPH_USER_SCOPES")
-	g.graphUserScopes = strings.Split(scopes, ",")
-
-	// Create the device code credential
-	credential, err := azidentity.NewDeviceCodeCredential(&azidentity.DeviceCodeCredentialOptions{
-		ClientID: clientId,
-		TenantID: tenantId,
-		UserPrompt: func(ctx context.Context, message azidentity.DeviceCodeMessage) error {
-			fmt.Println(message.Message)
-			return nil
-		},
-	})
+	clientSecret := os.Getenv("CLIENT_SECRET")
+	credential, err := azidentity.NewClientSecretCredential(tenantId, clientId, clientSecret, nil)
 	if err != nil {
 		return err
 	}
 
-	g.deviceCodeCredential = credential
+	g.clientSecretCredential = credential
 
 	// Create an auth provider using the credential
-	authProvider, err := auth.NewAzureIdentityAuthenticationProviderWithScopes(credential, g.graphUserScopes)
+	authProvider, err := auth.NewAzureIdentityAuthenticationProviderWithScopes(g.clientSecretCredential, []string{
+		"https://graph.microsoft.com/.default",
+	})
 	if err != nil {
 		return err
 	}
@@ -60,14 +49,16 @@ func (g *GraphHelper) InitializeGraphForUserAuth() error {
 
 	// Create a Graph client using request adapter
 	client := msgraphsdk.NewGraphServiceClient(adapter)
-	g.userClient = client
+	g.appClient = client
 
 	return nil
 }
 
-func (g *GraphHelper) GetUserToken() (*string, error) {
-	token, err := g.deviceCodeCredential.GetToken(context.Background(), policy.TokenRequestOptions{
-		Scopes: g.graphUserScopes,
+func (g *GraphHelper) GetAppToken() (*string, error) {
+	token, err := g.clientSecretCredential.GetToken(context.Background(), policy.TokenRequestOptions{
+		Scopes: []string{
+			"https://graph.microsoft.com/.default",
+		},
 	})
 	if err != nil {
 		return nil, err
@@ -76,39 +67,25 @@ func (g *GraphHelper) GetUserToken() (*string, error) {
 	return &token.Token, nil
 }
 
-func (g *GraphHelper) GetUser() (models.Userable, error) {
-	query := users.UserItemRequestBuilderGetQueryParameters{
-		// Only request specific properties
-		Select: []string{"displayName", "mail", "userPrincipalName"},
-	}
-
-	return g.userClient.Me().Get(context.Background(),
-		&users.UserItemRequestBuilderGetRequestConfiguration{
-			QueryParameters: &query,
-		})
-}
-
-func (g *GraphHelper) GetInbox() (models.MessageCollectionResponseable, error) {
+func (g *GraphHelper) GetUsers() (models.UserCollectionResponseable, error) {
 	var topValue int32 = 25
-	query := users.ItemMailFoldersItemMessagesRequestBuilderGetQueryParameters{
+	query := users.UsersRequestBuilderGetQueryParameters{
 		// Only request specific properties
-		Select: []string{"from", "isRead", "receivedDateTime", "subject"},
+		Select: []string{"displayName", "id", "mail"},
 		// Get at most 25 results
 		Top: &topValue,
-		// Sort by received time, newest first
-		Orderby: []string{"receivedDateTime DESC"},
+		// Sort by display name
+		Orderby: []string{"displayName"},
 	}
 
-	return g.userClient.Me().MailFolders().
-		ByMailFolderId("inbox").
-		Messages().
+	return g.appClient.Users().
 		Get(context.Background(),
-			&users.ItemMailFoldersItemMessagesRequestBuilderGetRequestConfiguration{
+			&users.UsersRequestBuilderGetRequestConfiguration{
 				QueryParameters: &query,
 			})
 }
 
-func (g *GraphHelper) SendMail(subject *string, body *string, recipient *string) error {
+func (g *GraphHelper) SendMail(subject *string, body *string, sender string, recipient *string) error {
 	// Create a new message
 	message := models.NewMessage()
 	message.SetSubject(subject)
@@ -131,5 +108,5 @@ func (g *GraphHelper) SendMail(subject *string, body *string, recipient *string)
 	sendMailBody.SetMessage(message)
 
 	// Send the message
-	return g.userClient.Me().SendMail().Post(context.Background(), sendMailBody, nil)
+	return g.appClient.Users().ByUserId(sender).SendMail().Post(context.Background(), sendMailBody, nil)
 }
