@@ -1,7 +1,7 @@
 # go-send
 A go CLI app for sending emails using Microsoft Graph API
 
-![Alt text](slsa/controllers_brief.svg)
+![Alt text](slsa/SLSA-Badge-full-level1.svg)
 <img src="slsa/controllers_brief.svg">
 
 ## export enviroment variables
