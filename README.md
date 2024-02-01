@@ -12,6 +12,8 @@ export CLIENT_SECRET=< SECRET >
 ./appname -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
 ```
 # Send Alert to Ms Teams channel
+```
 ./appname -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
+```
 > [!NOTE]  
 > The flag channel is "false" by default
