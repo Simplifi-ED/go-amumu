@@ -30,6 +30,7 @@ func main() {
 	from := flag.String("from", "", "The email address of the sender")
 	subject := flag.String("subject", "", "The subject of the email")
 	message := flag.String("message", "", "The message body of the email")
+	channel := flag.Bool("channel", false, "Send to MS Teams channel")
 	flag.Parse()
 
 	// Check if the arguments are valid
@@ -37,7 +38,7 @@ func main() {
 		log.Fatal("Invalid arguments. Please provide To, From, Subject and Message.")
 	}
 
-	sendMail(graphHelper, *from, *to, *subject, *message)
+	sendMail(graphHelper, *from, *to, *subject, *message, *channel)
 }
 
 func initializeGraph(graphHelper *graphhelper.GraphHelper) {
@@ -85,10 +86,10 @@ func listUsers(graphHelper *graphhelper.GraphHelper) {
 	fmt.Println()
 }
 
-func sendMail(graphHelper *graphhelper.GraphHelper, sender string, receiver string, subject string, body string) {
-	err := graphHelper.SendMail(&subject, &body, sender, &receiver)
+func sendMail(graphHelper *graphhelper.GraphHelper, sender string, receiver string, subject string, body string, channel bool) {
+	err := graphHelper.SendMail(&subject, &body, sender, &receiver, channel)
 	if err != nil {
-		log.Panicf("Error sending mail: %v", err)
+		log.Panicf("Error sending message: %v", err)
 	}
 	fmt.Println("Mail sent.")
 	fmt.Println()
