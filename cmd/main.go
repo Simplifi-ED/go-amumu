@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"go-send/graphhelper"
+	"go-send/smtp"
 	"log"
 	"os"
 
@@ -38,16 +39,22 @@ func main() {
 	message := ClientCmd.String("message", "", "The message body of the email")
 	channel := ClientCmd.Bool("channel", false, "Send to MS Teams channel")
 
+	if len(os.Args) < 2 {
+		fmt.Println("expected 'server' or 'client' subcommands")
+		os.Exit(1)
+	}
+
 	switch os.Args[1] {
 	case "server":
 		ServerCmd.Parse(os.Args[2:])
-		fmt.Println("Server Running...")
-
+		smtpserver := smtp.SMTPSERVER{}
+		smtpserver.Init("2525")
 	case "client":
 		ClientCmd.Parse(os.Args[2:])
 		// Check if the arguments are valid
 		if *to == "" || *from == "" || *subject == "" || *message == "" {
-			log.Fatal("Invalid arguments. Please provide To, From, Subject and Message.")
+			fmt.Println("Invalid arguments. Please provide the following arguments:")
+			log.Fatal("-to | -from | -subject | -message")
 		}
 
 		sendMail(graphHelper, *from, *to, *subject, *message, *channel)
