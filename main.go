@@ -3,10 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go-send/graphhelper"
 	"log"
 
+	"go-send/graphhelper"
+	"go-send/smtpserver"
+
 	"github.com/joho/godotenv"
+
 )
 
 func main() {
@@ -21,24 +24,29 @@ func main() {
 		log.Fatal("Error loading .env")
 	}
 
-	graphHelper := graphhelper.NewGraphHelper()
-
-	initializeGraph(graphHelper)
-
 	// Parse the command-line arguments
 	to := flag.String("to", "", "The email address of the recipient")
 	from := flag.String("from", "", "The email address of the sender")
 	subject := flag.String("subject", "", "The subject of the email")
 	message := flag.String("message", "", "The message body of the email")
 	channel := flag.Bool("channel", false, "Send to MS Teams channel")
+	server := flag.Bool("server", false, "Start SMTP server")
 	flag.Parse()
 
-	// Check if the arguments are valid
-	if *to == "" || *from == "" || *subject == "" || *message == "" {
+	// initializeGraph(graphHelper)
+	// Check if the -server flag is provided
+	if *server {
+		smtpserver.StartSMTPServer()
+		// Check if the arguments are valid
+	} else if *to == "" || *from == "" || *subject == "" || *message == "" {
 		log.Fatal("Invalid arguments. Please provide To, From, Subject and Message.")
+		// if no server flag provided and the other flag are valid send email
+	} else if !*server {
+		graphHelper := graphhelper.NewGraphHelper()
+		initializeGraph(graphHelper)
+		sendMail(graphHelper, *from, *to, *subject, *message, *channel)
 	}
 
-	sendMail(graphHelper, *from, *to, *subject, *message, *channel)
 }
 
 func initializeGraph(graphHelper *graphhelper.GraphHelper) {
