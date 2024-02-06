@@ -17,21 +17,10 @@ func main() {
 	fmt.Println()
 
 	// Load .env files
-	// .env.local takes precedence (if present)
-	godotenv.Load(".env.local")
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env")
-	}
+	loadEnv()
 
 	// Parse the command-line arguments
-	to := flag.String("to", "", "The email address of the recipient")
-	from := flag.String("from", "", "The email address of the sender")
-	subject := flag.String("subject", "", "The subject of the email")
-	message := flag.String("message", "", "The message body of the email")
-	channel := flag.Bool("channel", false, "Send to MS Teams channel")
-	server := flag.Bool("server", false, "Start SMTP server")
-	flag.Parse()
+	to, from, subject, message, channel, server := parseFlags()
 
 	// initializeGraph(graphHelper)
 	// Check if the -server flag is provided
@@ -101,4 +90,24 @@ func sendMail(graphHelper *graphhelper.GraphHelper, sender string, receiver stri
 	}
 	fmt.Println("Mail sent.")
 	fmt.Println()
+}
+
+func loadEnv() {
+	// .env.local takes precedence (if present)
+	godotenv.Load(".env.local")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env")
+	}
+}
+
+func parseFlags() (*string, *string, *string, *string, *bool, *bool) {
+	to := flag.String("to", "", "The email address of the recipient")
+	from := flag.String("from", "", "The email address of the sender")
+	subject := flag.String("subject", "", "The subject of the email")
+	message := flag.String("message", "", "The message body of the email")
+	channel := flag.Bool("channel", false, "Send to MS Teams channel")
+	server := flag.Bool("server", false, "Start SMTP server")
+	flag.Parse()
+	return to, from, subject, message, channel, server
 }
