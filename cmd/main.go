@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-send/graphhelper"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -25,20 +26,36 @@ func main() {
 
 	initializeGraph(graphHelper)
 
-	// Parse the command-line arguments
-	to := flag.String("to", "", "The email address of the recipient")
-	from := flag.String("from", "", "The email address of the sender")
-	subject := flag.String("subject", "", "The subject of the email")
-	message := flag.String("message", "", "The message body of the email")
-	channel := flag.Bool("channel", false, "Send to MS Teams channel")
-	flag.Parse()
+	//server commands set
+	ServerCmd := flag.NewFlagSet("server", flag.ExitOnError)
+	// serverPort := ServerCmd.String("port", "2525", "port")
 
-	// Check if the arguments are valid
-	if *to == "" || *from == "" || *subject == "" || *message == "" {
-		log.Fatal("Invalid arguments. Please provide To, From, Subject and Message.")
+	//client commands set
+	ClientCmd := flag.NewFlagSet("client", flag.ExitOnError)
+	to := ClientCmd.String("to", "", "The email address of the recipient")
+	from := ClientCmd.String("from", "", "The email address of the sender")
+	subject := ClientCmd.String("subject", "", "The subject of the email")
+	message := ClientCmd.String("message", "", "The message body of the email")
+	channel := ClientCmd.Bool("channel", false, "Send to MS Teams channel")
+
+	switch os.Args[1] {
+	case "server":
+		ServerCmd.Parse(os.Args[2:])
+		fmt.Println("Server Running...")
+
+	case "client":
+		ClientCmd.Parse(os.Args[2:])
+		// Check if the arguments are valid
+		if *to == "" || *from == "" || *subject == "" || *message == "" {
+			log.Fatal("Invalid arguments. Please provide To, From, Subject and Message.")
+		}
+
+		sendMail(graphHelper, *from, *to, *subject, *message, *channel)
+	default:
+		fmt.Println("expected 'server' or 'client' subcommands")
+		os.Exit(1)
 	}
 
-	sendMail(graphHelper, *from, *to, *subject, *message, *channel)
 }
 
 func initializeGraph(graphHelper *graphhelper.GraphHelper) {
