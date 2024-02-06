@@ -10,12 +10,17 @@ export TENANT_ID=< ID >
 export CLIENT_SECRET=< SECRET >
 ```
 ## Run the app
+### as an smtp server
 ```
-./appname -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
+./appname server
 ```
-## Send Alert to Ms Teams channel
+### send email with graph api
 ```
-./appname -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
+./appname client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
+```
+### Send Alert to Ms Teams channel
+```
+./appname client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
 ```
 > [!NOTE]  
 > The flag channel is "false" by default
