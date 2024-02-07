@@ -14,6 +14,7 @@ func InitializeGraph(graphHelper *graphhelper.GraphHelper) {
 }
 
 func SendMail(graphHelper *graphhelper.GraphHelper, sender string, receiver string, subject string, body string, channel bool) {
+	fmt.Println("Sending Mail...")
 	err := graphHelper.SendMail(&subject, &body, sender, &receiver, channel)
 	if err != nil {
 		log.Panicf("Error sending message: %v", err)

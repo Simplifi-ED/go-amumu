@@ -10,9 +10,23 @@ export TENANT_ID=< ID >
 export CLIENT_SECRET=< SECRET >
 ```
 ## Run the app
+## Usage
+```
+Usage:
+ ./main [subcommand] [options]
+server options:
+ -port string
+client options:
+ -to string - The email address of the recipient
+ -from string - The email address of the sender
+ -subject string - The subject of the email
+ -message string - The message body of the email
+ -channel boolean - Send to MS Teams channel (default=false)
+```
+## Examples
 ### as an smtp server
 ```
-./appname server
+./appname server -port 2525
 ```
 ### send email with graph api
 ```
