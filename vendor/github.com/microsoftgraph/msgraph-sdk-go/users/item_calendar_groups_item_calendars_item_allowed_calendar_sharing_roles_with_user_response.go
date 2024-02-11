@@ -1,0 +1,28 @@
+package users
+
+import (
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
+)
+
+// ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse 
+// Deprecated: This class is obsolete. Use allowedCalendarSharingRolesWithUserGetResponse instead.
+type ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse struct {
+    ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserGetResponse
+}
+// NewItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse instantiates a new ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse and sets the default values.
+func NewItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse()(*ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse) {
+    m := &ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse{
+        ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserGetResponse: *NewItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserGetResponse(),
+    }
+    return m
+}
+// CreateItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponseFromDiscriminatorValue creates a new instance of the appropriate class based on discriminator value
+func CreateItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponseFromDiscriminatorValue(parseNode i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.ParseNode)(i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable, error) {
+    return NewItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponse(), nil
+}
+// ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponseable 
+// Deprecated: This class is obsolete. Use allowedCalendarSharingRolesWithUserGetResponse instead.
+type ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserResponseable interface {
+    ItemCalendarGroupsItemCalendarsItemAllowedCalendarSharingRolesWithUserGetResponseable
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
+}

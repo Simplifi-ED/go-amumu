@@ -1,0 +1,28 @@
+package users
+
+import (
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91 "github.com/microsoft/kiota-abstractions-go/serialization"
+)
+
+// ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse 
+// Deprecated: This class is obsolete. Use deltaGetResponse instead.
+type ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse struct {
+    ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaGetResponse
+}
+// NewItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse instantiates a new ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse and sets the default values.
+func NewItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse()(*ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse) {
+    m := &ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse{
+        ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaGetResponse: *NewItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaGetResponse(),
+    }
+    return m
+}
+// CreateItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponseFromDiscriminatorValue creates a new instance of the appropriate class based on discriminator value
+func CreateItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponseFromDiscriminatorValue(parseNode i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.ParseNode)(i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable, error) {
+    return NewItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponse(), nil
+}
+// ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponseable 
+// Deprecated: This class is obsolete. Use deltaGetResponse instead.
+type ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaResponseable interface {
+    ItemJoinedTeamsItemPrimaryChannelMessagesItemRepliesDeltaGetResponseable
+    i878a80d2330e89d26896388a3f487eef27b0a0e6c010c493bf80be1452208f91.Parsable
+}
