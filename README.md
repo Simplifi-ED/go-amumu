@@ -1,4 +1,4 @@
-# go-send
+# go-amumu
 A go CLI app for sending emails using Microsoft Graph API
 
 ![Alt text](slsa/SLSA-Badge-full-level1.svg)
