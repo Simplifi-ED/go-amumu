@@ -4,13 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"go-send/graphhelper"
+	. "go-send/notification"
 	"go-send/smtp"
-	"go-send/utils"
+	. "go-send/utils"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 )
+
+var subjectmq *Subject
 
 func main() {
 	fmt.Println("Go SMTP <=> Graph")
@@ -48,22 +51,30 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
+	fmt.Println("Initializing App...")
+	graphHelper := graphhelper.NewGraphHelper()
+	InitializeGraph(graphHelper)
+
+	subjectmq = &Subject{}
+	subjectmq.SetGraphHelper(graphHelper)
+	watcher := &Watcher{}
+
+	smtpHandler := smtp.NewMailHandler(subjectmq, graphHelper)
+	subjectmq.Register(watcher)
 
 	switch os.Args[1] {
 	case "server":
 		ServerCmd.Parse(os.Args[2:])
 		smtpserver := smtp.SMTPSERVER{}
-		smtpserver.Init(*serverPort)
+		smtpserver.NewSMTPServer(*serverPort, smtpHandler.HandleEmail)
 	case "client":
 		ClientCmd.Parse(os.Args[2:])
 		// Check if the arguments are valid
 		if *to == "" || *from == "" || *subject == "" || *message == "" {
 			flag.Usage()
 		}
-		graphHelper := graphhelper.NewGraphHelper()
-		fmt.Println("Initializing...")
-		utils.InitializeGraph(graphHelper)
-		utils.SendMail(graphHelper, *from, *to, *subject, *message, *channel)
+
+		SendMail(graphHelper, *from, *to, *subject, *message, *channel)
 	default:
 		flag.Usage()
 		os.Exit(1)
