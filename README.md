@@ -13,7 +13,7 @@ export CLIENT_SECRET=< SECRET >
 ## Usage
 ```
 Usage:
- ./main [subcommand] [options]
+ amumu [subcommand] [options]
 server options:
  -port string
 client options:
@@ -26,15 +26,15 @@ client options:
 ## Examples
 ### as an smtp server
 ```
-./appname server -port 2525
+amumu server -port 2525
 ```
 ### send email with graph api
 ```
-./appname client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
+amumu client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
 ```
 ### Send Alert to Ms Teams channel
 ```
-./appname client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
+amumu client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
 ```
 > [!NOTE]  
 > The flag channel is "false" by default
