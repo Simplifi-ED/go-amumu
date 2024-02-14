@@ -3,10 +3,12 @@ package cli
 import (
 	"flag"
 	"go-send/adapters/secondary/graph"
+	"go-send/domain/entities"
+	"go-send/domain/usecase"
 	"os"
 )
 
-func RunClient(gh *graph.GraphHelper) {
+func RunClient(u *usecase.UserCase) {
 	ClientCmd := flag.NewFlagSet("client", flag.ExitOnError)
 	to := ClientCmd.String("to", "", "The email address of the recipient")
 	from := ClientCmd.String("from", "", "The email address of the sender")
@@ -23,5 +25,11 @@ func RunClient(gh *graph.GraphHelper) {
 		graphTeams := &graph.GraphTeams{}
 		graphTeams.SendAlert(*message)
 	}
-	gh.Send(subject, message, from, to)
+	m := &entities.Message{
+		To:      *to,
+		From:    *from,
+		Subject: *subject,
+		Body:    *message,
+	}
+	u.SendToGraph(m)
 }

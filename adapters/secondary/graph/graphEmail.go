@@ -12,7 +12,7 @@ func (g *GraphEmail) SendMail(sender string, receiver string, subject string, bo
 	log.Info("Sending Mail...")
 	err := g.Graph.Send(&subject, &body, &sender, &receiver)
 	if err != nil {
-		log.Error("Error sending message: %v", err)
+		log.Error("Error sending message", "Error:", err)
 	}
 	log.Info("Mail sent.")
 }

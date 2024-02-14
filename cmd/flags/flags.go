@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"go-send/adapters/primary/cli"
-	"go-send/adapters/primary/server"
 	"go-send/adapters/secondary/graph"
+	"go-send/domain/usecase"
 	"go-send/infrastructure/notification"
 	"os"
 
@@ -47,9 +47,14 @@ func (a *AmumuCmd) Run() {
 
 	switch os.Args[1] {
 	case "server":
-		server.RunServer()
+		d := usecase.NewDeviceCase()
+		d.RunServer(a.subject)
 	case "client":
-		cli.RunClient(a.graph)
+		graphEmail := &graph.GraphEmail{
+			Graph: a.graph,
+		}
+		u := usecase.NewUserCase(graphEmail)
+		cli.RunClient(u)
 	default:
 		flag.Usage()
 		os.Exit(1)
