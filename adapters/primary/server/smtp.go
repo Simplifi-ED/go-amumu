@@ -2,7 +2,6 @@ package server
 
 import (
 	"errors"
-	"fmt"
 	"go-send/domain/entities"
 	"go-send/infrastructure/notification"
 	"io"
@@ -69,11 +68,6 @@ func (s *Session) Data(r io.Reader) error {
 			Subject: subject,
 			Body:    string(body),
 		}
-		// Print the extracted fields
-		fmt.Println("From:", from)
-		fmt.Println("To:", to)
-		fmt.Println("Subject:", subject)
-		fmt.Println("Body:", string(body))
 		s.channel.SetEvent(*m)
 	}
 	return nil
