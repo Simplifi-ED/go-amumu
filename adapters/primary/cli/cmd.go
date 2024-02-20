@@ -23,13 +23,14 @@ func RunClient(u *usecase.UserCase) {
 	ClientCmd.Parse(os.Args[2:])
 
 	if *configFile != "" {
-		log.Info("Using config file:", *configFile)
 		primary.ValidateConfigPath(*configFile)
 		clientConfig, err := NewClientConfig(*configFile)
 		if err != nil {
 			log.Fatal("Error loading config", "Error", err)
 		}
 		u.SendToGraph(clientConfig)
+		graphTeams := &graph.GraphTeams{}
+		graphTeams.SendAlert(clientConfig.Channel)
 	} else if *to != "" && *from != "" && *subject != "" && *message != "" {
 		m := &entities.Message{
 			To:      *to,
