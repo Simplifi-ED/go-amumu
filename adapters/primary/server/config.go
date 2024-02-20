@@ -2,7 +2,10 @@ package server
 
 import (
 	"fmt"
+	"os"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -15,15 +18,52 @@ type Config struct {
 	AllowInsecureAuth bool
 }
 
-func NewConfig(port string) *Config {
-	addr := fmt.Sprintf("0.0.0.0:%s", port)
-	return &Config{
-		Address:           addr,
-		Domain:            "simplified",
-		WriteTimeout:      10 * time.Second,
-		ReadTimeout:       10 * time.Second,
-		MaxMessageBytes:   1024 * 1024,
-		MaxRecipients:     50,
-		AllowInsecureAuth: true,
+func NewConfig(configPath string) (*Config, error) {
+	type alias struct {
+		Address           string `yaml:"host"`
+		Domain            string `yaml:"domain"`
+		WriteTimeout      string `yaml:"writetimeout" default:"10"`
+		ReadTimeout       string `yaml:"readtimeout" default:"10"`
+		MaxMessageBytes   int64  `yaml:"maxMessagebytes" default:"1048576"`
+		MaxRecipients     int    `yaml:"maxRecipients" default:"50"`
+		AllowInsecureAuth bool   `yaml:"allowinsecureAuth" default:"true"`
 	}
+	smtpConfig := &alias{}
+
+	// Open config file
+	file, err := os.Open(configPath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	// Init new YAML decode
+	d := yaml.NewDecoder(file)
+
+	// Start YAML decoding from file
+	if err := d.Decode(&smtpConfig); err != nil {
+		return nil, err
+	}
+	writetimeout, _ := time.ParseDuration(smtpConfig.WriteTimeout)
+	readtimeout, _ := time.ParseDuration(smtpConfig.ReadTimeout)
+	return &Config{
+		Address:           smtpConfig.Address,
+		Domain:            smtpConfig.Domain,
+		WriteTimeout:      writetimeout * time.Second,
+		ReadTimeout:       readtimeout * time.Second,
+		MaxMessageBytes:   smtpConfig.MaxMessageBytes,
+		MaxRecipients:     smtpConfig.MaxRecipients,
+		AllowInsecureAuth: smtpConfig.AllowInsecureAuth,
+	}, nil
+}
+
+func ValidateConfigPath(path string) error {
+	s, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	if s.IsDir() {
+		return fmt.Errorf("'%s' is a directory, not a normal file", path)
+	}
+	return nil
 }
