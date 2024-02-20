@@ -23,7 +23,7 @@ func NewDeviceCase() *DeviceCase {
 func (d *DeviceCase) RunServer(ch *notification.Subject) {
 	ServerCmd := flag.NewFlagSet("server", flag.ExitOnError)
 	var configPath string
-	ServerCmd.StringVar(&configPath, "config", "amumu-config.yaml", "path to config file")
+	ServerCmd.StringVar(&configPath, "config", "/etc/amumu-config.yaml", "path to config file")
 
 	if err := primary.ValidateConfigPath(configPath); err != nil {
 		log.Fatal("Error validating file: %v", "Error:", err)

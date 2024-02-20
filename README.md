@@ -1,7 +1,7 @@
 # go-amumu
 A go CLI app for sending and receiving emails using Microsoft Graph API
 
-## set enviroment variables in .env file
+## Set enviroment variables in .env file
 ```
 CLIENT_ID=< ID >
 TENANT_ID=< ID >
@@ -9,12 +9,11 @@ CLIENT_SECRET=< SECRET >
 ```
 ## Run the app
 ## Usage
-```
+```bash
 Usage:
  amumu [subcommand] [options]
 server options:
- -port string
- -config Path
+ -config string - Path to yaml config file
 client options:
  -to string - The email address of the recipient
  -from string - The email address of the sender
@@ -23,23 +22,40 @@ client options:
  -channel boolean - Send to MS Teams channel (default=false)
 ```
 ## Examples
-### as an smtp server
+### As an smtp server
 > [!NOTE]  
 > The command server expect a yaml file called amumu-config.yaml in /etc/amumu-config.yaml otherwise, path should be specified with -config flag
 
 ```
-amumu server -port 2525
+amumu server -config=/tmp/config.yaml
 ```
+```yaml
+host: "0.0.0.0:1065"
+domain: "simplified"
+writetimeout: 10
+readtimeout: 10
+MaxMessageBytes: 1048576
+maxRecipients: 50
+allowInsecureAuth: true
 ```
-amumu server -config /tmp/config.yaml
-```
-### send email with graph api
+### Send email
 ```
 amumu client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
 ```
-### Send Alert to Ms Teams channel
+### Send with Alert to Ms Teams channel
 ```
 amumu client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
 ```
+### Using config file
+```bash
+amumu client -config=/tmp/config.yaml
+```
+```yaml
+to: "email@example.com"
+from: "email@example.com"
+subject: "test subject"
+body: "Hello world"
+channel: false
+``` 
 
 ![Alt text](slsa/SLSA-Badge-full-level1.svg)
