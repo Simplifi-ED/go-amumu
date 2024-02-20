@@ -10,7 +10,7 @@ import (
 
 type GraphTeams struct{}
 
-func (g *GraphTeams) SendAlert(message string) error {
+func (g *GraphTeams) SendAlert(data entities.WebhookData) error {
 	// setup webhook url
 	organization := "simplifiedfr"
 	gid := "31d891a8-180c-40d2-ba10-002ba8856053"
@@ -18,11 +18,6 @@ func (g *GraphTeams) SendAlert(message string) error {
 	altId := "cb84ff9b05404a22a22f8adb36900ecb"
 	gOwner := "7cb5c351-1a58-47ee-b6d2-cb8b652b55c5"
 	webhookUrl := fmt.Sprintf("https://%s.webhook.office.com/webhookb2/%s@%s/IncomingWebhook/%s/%s", organization, gid, tenantId, altId, gOwner)
-
-	data := entities.WebhookData{
-		Title: "IT Challenge Alerts",
-		Text:  message,
-	}
 
 	jsonData, err := json.Marshal(data)
 	if err != nil {

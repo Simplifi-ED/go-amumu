@@ -38,9 +38,10 @@ func RunClient(u *usecase.UserCase) {
 			Body:    *message,
 		}
 		u.SendToGraph(m)
-
 		if *channel {
 			graphTeams := &graph.GraphTeams{}
+			m.Channel.Title = *subject
+			m.Channel.Text = *message
 			graphTeams.SendAlert(m.Channel)
 		}
 	} else {
