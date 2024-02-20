@@ -38,14 +38,14 @@ func RunClient(u *usecase.UserCase) {
 			Body:    *message,
 		}
 		u.SendToGraph(m)
+
+		if *channel {
+			graphTeams := &graph.GraphTeams{}
+			graphTeams.SendAlert(m.Channel)
+		}
 	} else {
 		flag.Usage()
 		os.Exit(1)
-	}
-
-	if *channel {
-		graphTeams := &graph.GraphTeams{}
-		graphTeams.SendAlert(*message)
 	}
 
 }
