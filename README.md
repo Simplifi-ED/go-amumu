@@ -55,7 +55,9 @@ to: "email@example.com"
 from: "email@example.com"
 subject: "test subject"
 body: "Hello world"
-channel: false
+channel: 
+  title: "IT Challenge Alerts"
+  text: "Hello world test"
 ``` 
 
 ![Alt text](slsa/SLSA-Badge-full-level1.svg)
