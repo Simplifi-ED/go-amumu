@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -30,17 +29,14 @@ func NewConfig(configPath string) (*Config, error) {
 	}
 	smtpConfig := &alias{}
 
-	// Open config file
 	file, err := os.Open(configPath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	// Init new YAML decode
 	d := yaml.NewDecoder(file)
 
-	// Start YAML decoding from file
 	if err := d.Decode(&smtpConfig); err != nil {
 		return nil, err
 	}
@@ -55,15 +51,4 @@ func NewConfig(configPath string) (*Config, error) {
 		MaxRecipients:     smtpConfig.MaxRecipients,
 		AllowInsecureAuth: smtpConfig.AllowInsecureAuth,
 	}, nil
-}
-
-func ValidateConfigPath(path string) error {
-	s, err := os.Stat(path)
-	if err != nil {
-		return err
-	}
-	if s.IsDir() {
-		return fmt.Errorf("'%s' is a directory, not a normal file", path)
-	}
-	return nil
 }
