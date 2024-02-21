@@ -1,8 +1,9 @@
 package entities
 
 type Message struct {
-	To      string
-	From    string
-	Subject string
-	Body    string
+	To      string      `yaml:to`
+	From    string      `yaml:from`
+	Subject string      `yaml:suject`
+	Body    string      `yaml:body`
+	Channel WebhookData `yaml:channel`
 }

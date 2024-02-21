@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"flag"
+	"go-send/adapters/primary"
 	"go-send/adapters/primary/server"
 	"go-send/infrastructure/notification"
 	"os"
@@ -21,9 +22,17 @@ func NewDeviceCase() *DeviceCase {
 
 func (d *DeviceCase) RunServer(ch *notification.Subject) {
 	ServerCmd := flag.NewFlagSet("server", flag.ExitOnError)
-	serverPort := ServerCmd.String("port", "2525", "port")
+	var configPath string
+	ServerCmd.StringVar(&configPath, "config", "/etc/amumu-config.yaml", "path to config file")
+
+	if err := primary.ValidateConfigPath(configPath); err != nil {
+		log.Fatal("Error validating file: %v", "Error:", err)
+	}
 	ServerCmd.Parse(os.Args[2:])
-	config := server.NewConfig(*serverPort)
+	config, err := server.NewConfig(configPath)
+	if err != nil {
+		log.Fatal("Error loading config", "Error", err)
+	}
 	backend := &server.Backend{
 		Channel: ch,
 	}

@@ -1,0 +1,7 @@
+to: "email@example.fr"
+from: "email@example.fr"
+subject: "test subject"
+body: "Hello world test"
+channel: 
+  title: "IT Challenge Alerts"
+  text: "Hello world test"
