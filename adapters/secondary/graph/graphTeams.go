@@ -8,6 +8,10 @@ import (
 	"net/http"
 )
 
+type IGraphTeams interface {
+	SendAlert(data entities.WebhookData) error
+}
+
 type GraphTeams struct{}
 
 func (g *GraphTeams) SendAlert(data entities.WebhookData) error {
