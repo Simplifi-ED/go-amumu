@@ -1,7 +1,6 @@
 package server
 
 import (
-	"errors"
 	"go-send/domain/entities"
 	"go-send/infrastructure/notification"
 	"io"
@@ -30,9 +29,6 @@ type Session struct {
 
 // AuthPlain implements authentication using SASL PLAIN.
 func (s *Session) AuthPlain(username, password string) error {
-	if username != "username" || password != "password" {
-		return errors.New("Invalid username or password")
-	}
 	return nil
 }
 

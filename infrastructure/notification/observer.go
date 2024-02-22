@@ -6,5 +6,5 @@ import (
 )
 
 type Observer interface {
-	HandleEvent(entities.Message, *graph.GraphEmail)
+	HandleEvent(entities.Message, graph.IGraphEmail)
 }

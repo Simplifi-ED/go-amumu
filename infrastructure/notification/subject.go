@@ -7,11 +7,11 @@ import (
 
 type Subject struct {
 	observers  []Observer
-	message    entities.Message
-	graphEmail *graph.GraphEmail
+	Message    entities.Message
+	graphEmail graph.IGraphEmail
 }
 
-func (s *Subject) SetGraphEmail(gh *graph.GraphEmail) {
+func (s *Subject) SetGraphEmail(gh graph.IGraphEmail) {
 	s.graphEmail = gh
 }
 
@@ -30,11 +30,11 @@ func (s *Subject) Deregister(observer Observer) {
 
 func (s *Subject) Notify() {
 	for _, observer := range s.observers {
-		observer.HandleEvent(s.message, s.graphEmail)
+		observer.HandleEvent(s.Message, s.graphEmail)
 	}
 }
 
 func (s *Subject) SetEvent(message entities.Message) {
-	s.message = message
+	s.Message = message
 	s.Notify()
 }
