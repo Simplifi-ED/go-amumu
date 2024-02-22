@@ -20,6 +20,8 @@ client options:
  -subject string - The subject of the email
  -message string - The message body of the email
  -channel boolean - Send to MS Teams channel (default=false)
+ or
+ -config string - Path to yaml config file
 ```
 ## Examples
 ### As an smtp server
@@ -39,11 +41,11 @@ maxRecipients: 50
 allowInsecureAuth: true
 ```
 ### Send email
-```
+```bash
 amumu client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message"
 ```
 ### Send with Alert to Ms Teams channel
-```
+```bash
 amumu client -to="mail@example.com" -from="mail@example.com" -subject="Example Subject" -message="Example Message" --channel=true
 ```
 ### Using config file
