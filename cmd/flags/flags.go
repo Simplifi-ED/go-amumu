@@ -75,12 +75,14 @@ func SetCmdExec() {
 		fmt.Println("\nUsage:")
 		fmt.Printf(" %s [subcommand] [options]\n", os.Args[0])
 		fmt.Println("server options:")
-		fmt.Printf(" -port string\n")
+		fmt.Printf(" -config string - Path to yaml config file\n")
 		fmt.Println("client options:")
 		fmt.Printf(" -to string - The email address of the recipient\n")
 		fmt.Printf(" -from string - The email address of the sender\n")
 		fmt.Printf(" -subject string - The subject of the email\n")
 		fmt.Printf(" -message string - The message body of the email\n")
 		fmt.Printf(" -channel boolean - Send to MS Teams channel (default=false)\n")
+		fmt.Printf(" or\n")
+		fmt.Printf(" -config string - Path to yaml config file\n")
 	}
 }

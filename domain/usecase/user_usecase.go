@@ -3,19 +3,31 @@ package usecase
 import (
 	"go-send/adapters/secondary/graph"
 	"go-send/domain/entities"
+
+	"github.com/charmbracelet/log"
 )
 
-type UserCase struct {
-	gh *graph.GraphEmail
+type IUserCase interface {
+	SendToGraph(message *entities.Message) error
 }
 
-func NewUserCase(graph *graph.GraphEmail) *UserCase {
+type UserCase struct {
+	gh graph.IGraphEmail
+}
+
+func NewUserCase(graph graph.IGraphEmail) IUserCase {
 	return &UserCase{
 		gh: graph,
 	}
 }
 
 func (usecase *UserCase) SendToGraph(message *entities.Message) error {
-	usecase.gh.SendMail(message.From, message.To, message.Subject, message.Body)
+	log.Info("Sending Mail...")
+	err := usecase.gh.SendMail(message.From, message.To, message.Subject, message.Body)
+	if err != nil {
+		log.Error("Error sending message", "Error:", err)
+		return err
+	}
+	log.Info("Mail sent.")
 	return nil
 }

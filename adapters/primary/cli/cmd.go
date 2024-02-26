@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func RunClient(u *usecase.UserCase) {
+func RunClient(u usecase.IUserCase) {
 	ClientCmd := flag.NewFlagSet("client", flag.ExitOnError)
 	configFile := ClientCmd.String("config", "", "Path to the configuration file")
 	to := ClientCmd.String("to", "", "The email address of the recipient")
